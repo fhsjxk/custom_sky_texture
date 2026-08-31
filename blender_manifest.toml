@@ -1,0 +1,14 @@
+schema_version = "1.0.0"
+
+id = "custom_sky_texture"
+version = "0.9.1"
+name = "Custom Sky Texture"
+tagline = "A custom sky texture with improved daytime appearance"
+maintainer = "03ff"
+type = "add-on"
+
+tags = ["Node", "Material"]
+
+blender_version_min = "5.1.0"
+
+license = ["SPDX:GPL-3.0-or-later"]
