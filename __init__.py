@@ -219,9 +219,9 @@ class ShaderNodeTexSkyCustom(bpy.types.ShaderNodeCustomGroup):
         image.update()
         
         bpy.context.scene.world.color = bpy.context.scene.world.color
-        if bpy.context.scene.render.engine == "CYCLES":
-            bpy.context.scene.render.engine = "BLENDER_EEVEE"
-            bpy.context.scene.render.engine = "CYCLES"
+        #if bpy.context.scene.render.engine == "CYCLES":
+            #bpy.context.scene.render.engine = "BLENDER_EEVEE"
+            #bpy.context.scene.render.engine = "CYCLES"
 
     def draw_buttons(self, context, layout):
         #debug("draw_buttons")
@@ -278,44 +278,44 @@ def update_all():
             if node.bl_idname == "ShaderNodeTexSkyCustom":
                 node.update_texture()
 
-@bpy.app.handlers.persistent
-def update_post_load(dummy):
-    debug("update_post_load")
-    update_all()
+#@bpy.app.handlers.persistent
+#def update_post_load(dummy):
+    #debug("update_post_load")
+    #update_all()
 
-@bpy.app.handlers.persistent
-def update_post_undo(scene):
-    debug("update_post_undo")
-    update_all()
+#@bpy.app.handlers.persistent
+#def update_post_undo(scene):
+    #debug("update_post_undo")
+    #update_all()
 
-@bpy.app.handlers.persistent
-def update_post_redo(scene):
-    debug("update_post_redo")
-    update_all()
+#@bpy.app.handlers.persistent
+#def update_post_redo(scene):
+    #debug("update_post_redo")
+    #update_all()
 
 def register():
     bpy.types.NODE_MT_category_shader_texture.append(add_to_menu)
     bpy.utils.register_class(ShaderNodeTexSkyCustom)
 
-    if update_post_load not in bpy.app.handlers.load_post:
-        bpy.app.handlers.load_post.append(update_post_load)
+    #if update_post_load not in bpy.app.handlers.load_post:
+        #bpy.app.handlers.load_post.append(update_post_load)
 
-    if update_post_undo not in bpy.app.handlers.undo_post:
-        bpy.app.handlers.undo_post.append(update_post_undo)
+    #if update_post_undo not in bpy.app.handlers.undo_post:
+        #bpy.app.handlers.undo_post.append(update_post_undo)
 
-    if update_post_redo not in bpy.app.handlers.redo_post:
-            bpy.app.handlers.redo_post.append(update_post_redo)
+    #if update_post_redo not in bpy.app.handlers.redo_post:
+            #bpy.app.handlers.redo_post.append(update_post_redo)
 
 
 def unregister():
     bpy.types.NODE_MT_category_shader_texture.remove(add_to_menu)
     bpy.utils.unregister_class(ShaderNodeTexSkyCustom)
     
-    if update_post_load in bpy.app.handlers.load_post:
-        bpy.app.handlers.load_post.remove(update_post_load)
+    #if update_post_load in bpy.app.handlers.load_post:
+        #bpy.app.handlers.load_post.remove(update_post_load)
 
-    if update_post_undo in bpy.app.handlers.undo_post:
-        bpy.app.handlers.undo_post.remove(update_post_undo)
+    #if update_post_undo in bpy.app.handlers.undo_post:
+        #bpy.app.handlers.undo_post.remove(update_post_undo)
 
-    if update_post_redo in bpy.app.handlers.redo_post:
-            bpy.app.handlers.redo_post.remove(update_post_redo)
+    #if update_post_redo in bpy.app.handlers.redo_post:
+            #bpy.app.handlers.redo_post.remove(update_post_redo)
