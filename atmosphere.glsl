@@ -18,10 +18,12 @@ const float AEROSOL_TURBIDITY = 1.0;
 const float AEROSOL_BASE_DENSITY = 1.0 * (1.2 / AEROSOL_HEIGHT_SCALE);
 
 //const vec3 SUN_IRRADIANCE = (vec3(225, 210, 205) / vec3(255.0)) * 1360.0;
-//const vec3 SUN_IRRADIANCE = vec3(214.937791, 190.765948, 184.144280);
-const vec3 SUN_IRRADIANCE = vec3(215, 190, 185);
-const vec3 RAYLEIGH_SCATTERING_BASE = mix(vec3(46.0, 95.0, 233.0), vec3(46.0, 89.0, 207.0), 0.7) / 255.0 * 0.03624;
-const vec3 OZONE_ABSORPTION_BASE = vec3(200.0, 170.0, 0.0) / 255.0 * 0.0019;
+const vec3 SUN_IRRADIANCE = vec3(2.1493e2, 1.9076e2, 1.841e2);
+//const vec3 SUN_IRRADIANCE = vec3(215, 190, 185);
+//const vec3 RAYLEIGH_SCATTERING_BASE = mix(vec3(46.0, 95.0, 233.0), vec3(46.0, 89.0, 207.0), 0.7) / 255.0 * 0.03624;
+const vec3 RAYLEIGH_SCATTERING_BASE = vec3(6.6049e-3, 1.2345e-2, 2.9413e-2);
+//const vec3 OZONE_ABSORPTION_BASE = vec3(200.0, 170.0, 0.0) / 255.0 * 0.0019;
+const vec3 OZONE_ABSORPTION_BASE = vec3(2.2911e-3, 1.5404e-3, 0.0);
 const vec3 AEROSOL_SCATTERING_BASE = vec3(153.0, 202.0, 255.0) / 255.0 * 0.035;
 const vec3 AEROSOL_ABSORPTION_BASE = vec3(1.0) * 0.0003;
 const vec3 GROUND_ALBEDO = vec3(10.0, 45.0, 100.0) / 255.0;
