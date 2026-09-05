@@ -1,6 +1,6 @@
 // Multi scattering from https://www.shadertoy.com/view/msXXDS
 
-const float EXPOSURE = 0.01;
+const float EXPOSURE = 0.05;
 const float PI = 3.14159265358979323846;
 const float INV_PI = 0.31830988618379067154;
 const float INV_4PI = 0.07957747154594766788;
@@ -17,8 +17,10 @@ const float AEROSOL_HEIGHT_SCALE = 1.2;
 const float AEROSOL_TURBIDITY = 1.0;
 const float AEROSOL_BASE_DENSITY = 1.0 * (1.2 / AEROSOL_HEIGHT_SCALE);
 
-const vec3 SUN_IRRADIANCE = (vec3(225, 210, 205) / vec3(255.0)) * 1360.0;
-const vec3 RAYLEIGH_SCATTERING_BASE = mix(vec3(46.0, 95.0, 233.0), vec3(46.0, 89.0, 207.0), 0.5) / 255.0 * 0.03624;
+//const vec3 SUN_IRRADIANCE = (vec3(225, 210, 205) / vec3(255.0)) * 1360.0;
+//const vec3 SUN_IRRADIANCE = vec3(214.937791, 190.765948, 184.144280);
+const vec3 SUN_IRRADIANCE = vec3(215, 190, 185);
+const vec3 RAYLEIGH_SCATTERING_BASE = mix(vec3(46.0, 95.0, 233.0), vec3(46.0, 89.0, 207.0), 0.7) / 255.0 * 0.03624;
 const vec3 OZONE_ABSORPTION_BASE = vec3(200.0, 170.0, 0.0) / 255.0 * 0.0019;
 const vec3 AEROSOL_SCATTERING_BASE = vec3(153.0, 202.0, 255.0) / 255.0 * 0.035;
 const vec3 AEROSOL_ABSORPTION_BASE = vec3(1.0) * 0.0003;
