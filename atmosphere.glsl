@@ -1,4 +1,5 @@
 //Multi scattering from https://www.shadertoy.com/view/msXXDS
+const float EXPOSURE = 0.01;
 const float PI = 3.14159265358979323846;
 const float INV_PI = 0.31830988618379067154;
 const float INV_4PI = 0.07957747154594766788;
@@ -7,14 +8,14 @@ const int INSCATTERING_STEPS = 32;
 const float PLANET_RADIUS = 6371.0;
 const float ATMOSPHERE_THICKNESS = 100.0;
 const float ATMOSPHERE_RADIUS = PLANET_RADIUS + ATMOSPHERE_THICKNESS;
-const float MOLECULAR_HEIGHT_SCALE = 8.5;
+const float MOLECULAR_HEIGHT_SCALE = 8.0;
 const float AEROSOL_HEIGHT_SCALE = 1.2;
 const float AEROSOL_TURBIDITY = 1.0;
 const float AEROSOL_BASE_DENSITY = 1.0 * (1.2 / AEROSOL_HEIGHT_SCALE);
-const vec3 SUN_RADIANCE = (vec3(225, 210, 205) / vec3(255.0)) * 10.0;
+const vec3 SUN_IRRADIANCE = (vec3(225, 210, 205) / vec3(255.0)) * 1360.0;
 const vec3 RAYLEIGH_SCATTERING_BASE = mix(vec3(46.0, 95.0, 233.0), vec3(46.0, 89.0, 207.0), 0.5) / 255.0 * 0.03624;
 const vec3 OZONE_ABSORPTION_BASE = vec3(200.0, 170.0, 0.0) / 255.0 * 0.0019;
-const vec3 AEROSOL_SCATTERING_BASE = vec3(160.0, 200.0, 255.0) / 255.0 * 0.035;
+const vec3 AEROSOL_SCATTERING_BASE = vec3(155.0, 200.0, 255.0) / 255.0 * 0.035;
 const vec3 AEROSOL_ABSORPTION_BASE = vec3(1.0) * 0.0003;
 const vec3 GROUND_ALBEDO = vec3(10.0, 40.0, 100.0) / 255.0;
 float raySphereIntersect(vec3 origin, vec3 dir, float radius)
@@ -45,7 +46,7 @@ float hgPhase(float cosTheta, float g)
     float denom = 1.0 + g2 + 2.0 * g * cosTheta;
     return INV_4PI * (1.0 - g2) / (denom * sqrt(denom));
 }
-float aerosolPhase(float cosTheta){ return mix(hgPhase(cosTheta, 0.62), mix(hgPhase(cosTheta, 0.82), mix(hgPhase(cosTheta, 0.93), hgPhase(cosTheta, 0.975), 0.27), 0.45), 0.35) * 1.3; }
+float aerosolPhase(float cosTheta){ return mix(hgPhase(cosTheta, 0.62), mix(hgPhase(cosTheta, 0.82), mix(hgPhase(cosTheta, 0.93), hgPhase(cosTheta, 0.97), 0.2), 0.4), 0.35) * 1.3; }
 float rayleighPhase(float cosTheta) { return mix((1.0 / PI / 4.0) * 0.4 * -cosTheta + (1.0 / PI / 4.0) * 1.12, (3.0 / (16.0 * PI)) * (1.0 + cosTheta * cosTheta), 0.8); }
 void getAtmosphereCoefficients(float h, out vec3 aerosolAbsorption, out vec3 aerosolScattering, out vec3 molecularAbsorption, out vec3 molecularScattering, out vec3 extinction)
 {
@@ -58,7 +59,7 @@ void getAtmosphereCoefficients(float h, out vec3 aerosolAbsorption, out vec3 aer
     const float ozoneHalfThickness = 35.66 * 0.5;
     float ozoneDensity = max(1.0 - abs(h - ozonePeak) / ozoneHalfThickness, 0.0) * ozone;
     molecularAbsorption = OZONE_ABSORPTION_BASE * ozoneDensity;
-    molecularAbsorption += 1e-3 * exp(-0.07771971 * pow(h + 1.0, 1.16364243));
+    //molecularAbsorption += 1e-3 * exp(-0.07771971 * pow(h + 1.0, 1.16364243));
     extinction = aerosolAbsorption + aerosolScattering + molecularAbsorption + molecularScattering;
 }
 vec3 computeTransmittance(vec3 origin, vec3 rayDirection)
@@ -91,9 +92,9 @@ vec3 multiScattering(float cosTheta, float normalizedAlt, float r)
     vec3 transToGround = computeTransmittance(groundOrigin, groundDirection);
     vec3 sampleOrigin = vec3(0.0, PLANET_RADIUS + normalizedAlt * ATMOSPHERE_THICKNESS, 0.0);
     vec3 transGroundToSample = computeTransmittance(groundOrigin, vec3(0.0, 1.0, 0.0)) / max(computeTransmittance(sampleOrigin, vec3(0.0, 1.0, 0.0)), vec3(1e-6));
-    vec3 groundRadiance = (INV_4PI * solidAngle) * (GROUND_ALBEDO / PI) * transToGround * transGroundToSample * max(0.0, cosTheta);
+    vec3 groundIRRADIANCE = (INV_4PI * solidAngle) * (GROUND_ALBEDO / PI) * transToGround * transGroundToSample * max(0.0, cosTheta);
     vec3 approxMulti = 0.015 * vec3(0.2, 0.35, 1.0) / (1.0 + 5.0 * exp(-17.92 * cosTheta));
-    return groundRadiance + approxMulti;
+    return groundIRRADIANCE + approxMulti;
 }
 vec3 computeInscattering(vec3 sunDirection, vec3 rayDirection)
 {
@@ -138,7 +139,7 @@ vec3 computeInscattering(vec3 sunDirection, vec3 rayDirection)
         vec3 transToSun = computeTransmittance(p, sunDirN);
         vec3 singleScatter = (molecularScattering * rayleighPhaseVal + aerosolScattering * aerosolPhaseVal) * transToSun;
         vec3 multiScatter = multiScattering(sunCosTheta, normalizedH, r) * (molecularScattering + aerosolScattering) * scatter_muti;
-        vec3 source = SUN_RADIANCE * (singleScatter + multiScatter);
+        vec3 source = SUN_IRRADIANCE * (singleScatter + multiScatter);
         vec3 stepT = exp(-ext * dt);
         vec3 integrated = (source - source * stepT) / max(ext, vec3(1e-6));
         L += T * integrated;
@@ -169,5 +170,6 @@ void main()
     vec3 viewDirection = getViewDirection(uv);
     vec3 sunDirection = getSunDirection(sun_elevation, sun_rotation);
     vec3 radiance = computeInscattering(sunDirection, viewDirection);
-    imageStore(img_output, pixel, vec4(radiance, 1.0));
+    vec3 color = radiance * EXPOSURE;
+    imageStore(img_output, pixel, vec4(color, 1.0));
 }

@@ -1,7 +1,7 @@
 schema_version = "1.0.0"
 
 id = "custom_sky_texture"
-version = "0.9.1"
+version = "0.9.2"
 name = "Custom Sky Texture"
 tagline = "A custom sky texture with improved daytime appearance"
 maintainer = "03ff"
