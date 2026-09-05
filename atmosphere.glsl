@@ -20,9 +20,9 @@ const float AEROSOL_BASE_DENSITY = 1.0 * (1.2 / AEROSOL_HEIGHT_SCALE);
 const vec3 SUN_IRRADIANCE = (vec3(225, 210, 205) / vec3(255.0)) * 1360.0;
 const vec3 RAYLEIGH_SCATTERING_BASE = mix(vec3(46.0, 95.0, 233.0), vec3(46.0, 89.0, 207.0), 0.5) / 255.0 * 0.03624;
 const vec3 OZONE_ABSORPTION_BASE = vec3(200.0, 170.0, 0.0) / 255.0 * 0.0019;
-const vec3 AEROSOL_SCATTERING_BASE = vec3(155.0, 200.0, 255.0) / 255.0 * 0.035;
+const vec3 AEROSOL_SCATTERING_BASE = vec3(153.0, 202.0, 255.0) / 255.0 * 0.035;
 const vec3 AEROSOL_ABSORPTION_BASE = vec3(1.0) * 0.0003;
-const vec3 GROUND_ALBEDO = vec3(10.0, 40.0, 100.0) / 255.0;
+const vec3 GROUND_ALBEDO = vec3(10.0, 45.0, 100.0) / 255.0;
 
 float raySphereIntersect(vec3 origin, vec3 dir, float radius)
 {
@@ -58,7 +58,7 @@ float hgPhase(float cosTheta, float g)
 
 float aerosolPhase(float cosTheta)
 {
-    return mix(hgPhase(cosTheta, 0.62), mix(hgPhase(cosTheta, 0.82), mix(hgPhase(cosTheta, 0.93), hgPhase(cosTheta, 0.97), 0.2), 0.4), 0.35) * 1.3;
+    return mix(hgPhase(cosTheta, 0.62), mix(hgPhase(cosTheta, 0.82), mix(hgPhase(cosTheta, 0.93), hgPhase(cosTheta, 0.97), 0.2), 0.4), 0.42) * 1.3;
 }
 
 float rayleighPhase(float cosTheta)
@@ -79,9 +79,7 @@ void getAtmosphereCoefficients(
     aerosolAbsorption = AEROSOL_ABSORPTION_BASE * aerosolDensity * AEROSOL_TURBIDITY;
     aerosolScattering = AEROSOL_SCATTERING_BASE * aerosolDensity * AEROSOL_TURBIDITY;
     molecularScattering = RAYLEIGH_SCATTERING_BASE * exp(-h / MOLECULAR_HEIGHT_SCALE) * air;
-    const float ozonePeak = 22.35;
-    const float ozoneHalfThickness = 35.66 * 0.5;
-    float ozoneDensity = max(1.0 - abs(h - ozonePeak) / ozoneHalfThickness, 0.0) * ozone;
+    float ozoneDensity = max(1.0 - abs(h - 22.35) / (35.66 * 0.5), 0.0) * ozone;
     molecularAbsorption = OZONE_ABSORPTION_BASE * ozoneDensity;
     extinction = aerosolAbsorption + aerosolScattering + molecularAbsorption + molecularScattering;
 }
@@ -115,9 +113,9 @@ vec3 multiScattering(float cosTheta, float normalizedAlt, float r)
     vec3 transToGround = computeTransmittance(groundOrigin, groundDirection);
     vec3 sampleOrigin = vec3(0.0, PLANET_RADIUS + normalizedAlt * ATMOSPHERE_THICKNESS, 0.0);
     vec3 transGroundToSample = computeTransmittance(groundOrigin, vec3(0.0, 1.0, 0.0)) / max(computeTransmittance(sampleOrigin, vec3(0.0, 1.0, 0.0)), vec3(1e-6));
-    vec3 groundIRRADIANCE = (INV_4PI * solidAngle) * (GROUND_ALBEDO / PI) * transToGround * transGroundToSample * max(0.0, cosTheta);
+    vec3 groundRadiance = (INV_4PI * solidAngle) * (GROUND_ALBEDO / PI) * transToGround * transGroundToSample * max(0.0, cosTheta);
     vec3 approxMulti = 0.015 * vec3(0.2, 0.35, 1.0) / (1.0 + 5.0 * exp(-17.92 * cosTheta));
-    return groundIRRADIANCE + approxMulti;
+    return groundRadiance + approxMulti;
 }
 
 vec3 computeInscattering(vec3 sunDirection, vec3 rayDirection)

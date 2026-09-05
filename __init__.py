@@ -221,14 +221,14 @@ def add_to_menu(self, context):
     op.use_transform = True
 
 
-def update_all():
-    debug("update_all")
-    for world in bpy.data.worlds:
-        if world.node_tree is None:
-            continue
-        for node in world.node_tree.nodes:
-            if node.bl_idname == "ShaderNodeTexSkyCustom":
-                node.update_texture()
+# def update_all():
+#     debug("update_all")
+#     for world in bpy.data.worlds:
+#         if world.node_tree is None:
+#             continue
+#         for node in world.node_tree.nodes:
+#             if node.bl_idname == "ShaderNodeTexSkyCustom":
+#                 node.update_texture()
 
 
 # @bpy.app.handlers.persistent
