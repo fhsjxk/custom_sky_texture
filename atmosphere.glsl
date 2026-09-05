@@ -30,9 +30,9 @@ const vec3 RAYLEIGH_SCATTERING_BASE = mix(vec3(46.0, 95.0, 233.0), vec3(46.0, 89
 const vec3 OZONE_ABSORPTION_BASE = vec3(200.0, 170.0, 0.0) / 255.0 * 0.0019; // Artistic
 //const vec3 OZONE_ABSORPTION_BASE = vec3(2.2911e-3, 1.5404e-3, 0.0); // Physical
 
-const vec3 AEROSOL_SCATTERING_BASE = vec3(153.0, 202.0, 255.0) / 255.0 * 0.035;
-const vec3 AEROSOL_ABSORPTION_BASE = vec3(1.0) * 0.0003;
-const vec3 GROUND_ALBEDO = vec3(10.0, 45.0, 100.0) / 255.0;
+const vec3 AEROSOL_SCATTERING_BASE = vec3(153.0, 202.0, 255.0) / 255.0 * 0.035; // Artistic
+const vec3 AEROSOL_ABSORPTION_BASE = vec3(1.0) * 0.0003; // Artistic
+const vec3 GROUND_ALBEDO = vec3(10.0, 45.0, 100.0) / 255.0; // Artistic
 
 float raySphereIntersect(vec3 origin, vec3 dir, float radius)
 {
