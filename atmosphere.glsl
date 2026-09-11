@@ -124,7 +124,8 @@ vec3 multiScattering(float cosTheta, float normalizedAlt, float r)
     vec3 sampleOrigin = vec3(0.0, PLANET_RADIUS + normalizedAlt * ATMOSPHERE_THICKNESS, 0.0);
     vec3 transGroundToSample = computeTransmittance(groundOrigin, vec3(0.0, 1.0, 0.0)) / max(computeTransmittance(sampleOrigin, vec3(0.0, 1.0, 0.0)), vec3(1e-6));
     vec3 groundRadiance = (INV_4PI * solidAngle) * (GROUND_ALBEDO / PI) * transToGround * transGroundToSample * max(0.0, cosTheta);
-    vec3 approxMulti = 0.015 * vec3(0.2, 0.35, 1.0) / (1.0 + 5.0 * exp(-17.92 * cosTheta));
+    vec3 multiScatterColor = mix(vec3(0.7), vec3(0.19, 0.36, 1.0), smoothstep(0.05, 0.33, cosTheta) + 0.7 * smoothstep(0.02, -0.07, cosTheta));
+    vec3 approxMulti = 0.02 * multiScatterColor / (1.0 + 5.0 * exp(-17.92 * cosTheta));
     return groundRadiance + approxMulti;
 }
 
